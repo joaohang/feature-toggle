@@ -1,0 +1,54 @@
+openapi: 3.0.0
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: http://localhost:3000/api/v1/
+info:
+  description: This is a simple feature toggle management API
+  version: "1.0.0"
+  title: Feature Toggle API
+tags:
+  - name: features
+    description: Features of system
+  - name: health
+    description: Features service health
+paths:
+  /health:
+    get:
+      tags:
+        - features
+      summary: searches inventory
+      operationId: featuresHealth
+      description: |
+        Endpoint that invokes extensible health check logic.
+      responses:
+        '200':
+          description: service health results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+components:
+  schemas:
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "UP"
+        message:
+          type: string
+          example: "Service health results return successfully"
+        checks:
+          type: array
+          items: 
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Postgres"
+              status:
+                type: string
+                example: "UP"
+              reposeTime:
+                type: number
+                example: 0.7
