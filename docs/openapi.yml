@@ -1,21 +1,23 @@
 openapi: 3.0.0
 servers:
-  - description: SwaggerHub API Auto Mocking
-    url: http://localhost:3000/api/v1/
+  - description: Local API
+    url: http://localhost:3000/v1/
 info:
   description: This is a simple feature toggle management API
   version: "1.0.0"
   title: Feature Toggle API
 tags:
-  - name: features
+  - name: Features
     description: Features of system
-  - name: health
+  - name: Customers
+    description: Customers with a feature
+  - name: Health
     description: Features service health
 paths:
   /health:
     get:
       tags:
-        - features
+        - Health
       summary: searches inventory
       operationId: featuresHealth
       description: |
@@ -27,6 +29,268 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Health'
+  /features:
+    get:
+      tags:
+        - Features
+      summary: List features
+      operationId: features
+      description: |
+        Endpoint that return all features os system
+      responses:
+        '200':
+          description: Succes return features List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Features'
+    post:
+      tags:
+        - "Features"
+      summary: "Creat a new feature"
+      operationId: createFeature
+      description: |
+        Endpoint to create a new feature
+      responses:
+        '201':
+          description: Feature created with successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureCreated'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatFeature'
+        description: Created feature object
+        required: true
+  /features/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      tags:
+        - "Features"
+      summary: Get a feature
+      operationId: getFeature
+      description: |
+        Endpoint that return a feature
+      responses:
+        '201':
+          description: Succes return a feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OneFeature'
+    put:
+      parameters:
+        - name: id
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      tags:
+        - "Features"
+      summary: Upadate a feature
+      operationId: updateFeature
+      description: |
+        Endpoint to update a feature
+      responses:
+        '201':
+          description: Feature updated with successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureCreated'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatFeature'
+        description: Created feature object
+        required: true
+    delete:
+      parameters:
+        - name: id
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      tags:
+        - "Features"
+      summary: Disable a feature
+      operationId: deleteFeature
+      description: |
+        Endpoint to Disable a feature
+      responses:
+        '201':
+          description: Feature disabled with successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    example: Feature deleted with successfullyfully
+
+  /features/{id}/customers:
+    get:
+      parameters:
+        - name: id
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      tags:
+        - "Customers"
+      summary: List all customers linked with this feature
+      operationId: customersFeatures
+      description: |
+        Endpoint that return a list that customers linked with this feature
+      responses:
+        '200':
+          description: Succes return a list that customers lineked with this feature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerFeatures'
+    post:
+      tags:
+        - "Customers"
+      summary: "Link customers a feature"
+      operationId: linkCustomerFeature
+      description: |
+        Endpoint to link one or any customers a feature
+      responses:
+        '201':
+          description: Customers linked with successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Customers linked with successfully
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkCustomer'
+        description: Created feature object
+        required: true
+
+  /features/{id}/customers/{customerId}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: customerId
+          in: path
+          description: Customer ID
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Customers"
+      summary: Check if a customer is linked with this feature(by feature id)
+      operationId: checkCustomersFeatures
+      description: |
+        Endpoint that return if customer is linked with this feature(by feature id)
+      responses:
+        '200':
+          description: Custumer linked this feature
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Custumer linked this feature
+    delete:
+      parameters:
+        - name: id
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: customerId
+          in: path
+          description: Customer ID
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Customers"
+      summary: Unlink customer of feature
+      operationId: deleteFeature
+      description: |
+        Endpoint to unlink customer of feature
+      responses:
+        '201':
+          description: Unlink customer of feature
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    example: Unlinked customer of feature with successfully
+  /features/{featureName}/customers/{customerId}:
+    get:
+      parameters:
+        - name: featureName
+          in: path
+          description: Feature ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: customerId
+          in: path
+          description: Customer ID
+          required: true
+          schema:
+            type: string
+      tags:
+        - "Customers"
+      summary: Check if a customer is linked with this feature(by feature name)
+      operationId: checkCustomersFeaturesByName
+      description: |
+        Endpoint that return if a customer is linked with this feature(by feature name)
+      responses:
+        '200':
+          description: Custumer linked with this feature
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Custumer use this feature
 components:
   schemas:
     Health:
@@ -52,3 +316,87 @@ components:
               reposeTime:
                 type: number
                 example: 0.7
+    Features:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Features return successfully"
+        data:
+          type: object
+          properties:
+            items:
+              type: array
+              xml:
+                name: items
+                wrapped: true
+              items:
+                $ref: '#/components/schemas/Feature'
+    OneFeature:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Feature return successfully"
+        data:
+          $ref: '#/components/schemas/Feature'
+    Feature:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 730345fa-fb84-4aa0-a7fd-d45d0a1479bb
+        name:
+          type: string
+          example: "SendSQS"
+        description:
+          type: string
+          example: "Send Event to SQS"
+    FeatureCreated:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feature created with successfully
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 730345fa-fb84-4aa0-a7fd-d45d0a1479bb
+    CreatFeature:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "SendSQS"
+        description:
+          type: string
+          example: "Send Event to SQS"
+    CustomerFeatures:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Customers with this features return with successfully
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              example: 730345fa-fb84-4aa0-a7fd-d45d0a1479bb
+            name:
+              type: string
+              example: "SendSQS"
+            description:
+              type: string
+              example: "Send Event to SQS"
+            items:
+              type: array
+              example: ['e5a358ff-fea5-4771-a4cc-01f5b36a9afe', '4bf2bcbd-331b-45cc-b852-1fb0f70a13bd']
+    LinkCustomer:
+      type: object
+      properties:
+        customers:
+          type: array
+          example: ['e5a358ff-fea5-4771-a4cc-01f5b36a9afe', '4bf2bcbd-331b-45cc-b852-1fb0f70a13bd']
